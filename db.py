@@ -1,70 +1,31 @@
 import mysql.connector
-from mysql.connector import Error
 
 
-DB_CONFIG = {
-    "host": "127.0.0.1",
-    "port": 3306,
-    "user": "root",
-    "password": "",
-    "database": "finora_db",
-}
+# ============================================================
+# DATABASE CONFIGURATION
+# ============================================================
 
+DB_HOST = "localhost"
+DB_USER = "root"
+DB_PASSWORD = ""
+DB_NAME = "finora"
+
+
+# ============================================================
+# GET DATABASE CONNECTION
+# ============================================================
 
 def get_db():
     try:
         connection = mysql.connector.connect(
-            host=DB_CONFIG["host"],
-            port=DB_CONFIG["port"],
-            user=DB_CONFIG["user"],
-            password=DB_CONFIG["password"],
-            database=DB_CONFIG["database"]
+            host=DB_HOST,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            database=DB_NAME
         )
 
         return connection
 
-    except Error as e:
-        print("========================================")
-        print("DATABASE ERROR")
-        print("========================================")
-        print(e)
-        print("========================================")
+    except mysql.connector.Error as e:
+        print("DATABASE CONNECTION ERROR:", e)
         raise
-
-
-def test_connection():
-    connection = None
-    cursor = None
-
-    try:
-        connection = get_db()
-
-        if connection.is_connected():
-            cursor = connection.cursor()
-
-            cursor.execute("SELECT DATABASE()")
-            result = cursor.fetchone()
-
-            print("========================================")
-            print("DATABASE FINORA BERHASIL TERHUBUNG")
-            print("========================================")
-            print("Database aktif :", result[0])
-            print("========================================")
-
-            return True
-
-    except Error as e:
-        print("========================================")
-        print("DATABASE FINORA GAGAL TERHUBUNG")
-        print("========================================")
-        print(e)
-        print("========================================")
-
-        return False
-
-    finally:
-        if cursor:
-            cursor.close()
-
-        if connection and connection.is_connected():
-            connection.close()
